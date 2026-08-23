@@ -10,9 +10,6 @@
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
 
-      targetVault = "/home/manu/Documents/repositorios/Dots/obsidian/template";
-      themeDir = "${targetVault}/.obsidian/themes/Mytheme";
-
       buildTheme = pkgs.writeShellScriptBin "build-theme" ''
         set -e
         echo "🎨 Compilando SCSS para Mytheme..."
@@ -28,14 +25,16 @@
       installTheme = pkgs.writeShellScriptBin "install-theme" ''
         set -e
         REPO_DIR="$(pwd)"
-        TARGET_DIR="${themeDir}"
-        echo "🔗 Instalando symlink de Mytheme en el vault de pruebas..."
-        mkdir -p "${targetVault}/.obsidian/themes"
+        TARGET_VAULT="''${TARGET_VAULT:-$(realpath "$REPO_DIR/../MizarOS/obsidian/template")}"
+        TARGET_DIR="$TARGET_VAULT/.obsidian/themes/Mytheme"
+
+        echo "🔗 Instalando symlink de Mytheme en $TARGET_VAULT..."
+        mkdir -p "$TARGET_VAULT/.obsidian/themes"
         rm -rf "$TARGET_DIR"
         ln -sfn "$REPO_DIR" "$TARGET_DIR"
         echo "✅ Symlink creado: $TARGET_DIR -> $REPO_DIR"
 
-        APPEARANCE_FILE="${targetVault}/.obsidian/appearance.json"
+        APPEARANCE_FILE="$TARGET_VAULT/.obsidian/appearance.json"
         if [ -f "$APPEARANCE_FILE" ]; then
           ${pkgs.jq}/bin/jq '.cssTheme = "Mytheme"' "$APPEARANCE_FILE" > "$APPEARANCE_FILE.tmp" && mv "$APPEARANCE_FILE.tmp" "$APPEARANCE_FILE"
           echo "✅ Tema activo configurado a 'Mytheme' en appearance.json"
