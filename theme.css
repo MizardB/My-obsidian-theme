@@ -1266,96 +1266,45 @@ body:is(.mod-macos, .adaptive-mode-off, .is-android:not(.adaptive-mode-off)) .mo
   --setting-nav-icon-background: var(--color-blue);
 }
 
-body.status-bar-baseline .status-bar {
-  transition: var(--anim-duration-moderate) var(--anim-motion-baseline);
-  border: none;
-  transform-origin: bottom right;
-  background-color: transparent;
-  min-height: 8px;
-  height: calc-size(auto, size);
-}
-
-body.status-bar-baseline .status-bar::before {
-  transition: var(--anim-duration-moderate) var(--anim-motion-baseline);
-  content: "";
-  position: absolute;
-  bottom: 0;
+body .status-bar {
+  position: fixed;
   right: 0;
-  width: 150%;
-  height: 200%;
-  z-index: -1;
-  pointer-events: none;
-  background: radial-gradient(farthest-side at right bottom, var(--background-primary), hsl(from var(--mono-0) h s l/0));
+  bottom: 0;
+  z-index: 1000;
+  display: inline-flex;
+  width: fit-content;
+  max-width: fit-content;
+  height: auto;
+  min-height: 24px;
+  align-items: center;
+  gap: var(--size-4-2, 6px);
+  padding: 4px 12px 4px 10px;
+  margin: 0;
+  border: 1px solid var(--background-modifier-border);
+  border-right: none;
+  border-bottom: none;
+  border-radius: var(--radius-m, 6px) 0 0 0;
+  background-color: var(--modal-background);
+  backdrop-filter: var(--blur-m);
+  -webkit-backdrop-filter: var(--blur-m);
+  box-shadow: var(--shadow-s);
+  transform-origin: bottom right;
+  pointer-events: auto;
+  transition: opacity 160ms var(--anim-motion-baseline), transform 160ms var(--anim-motion-baseline);
 }
-
-body.status-bar-baseline .status-bar:not(:hover) {
-  transform: scale(0.8);
-  opacity: 0.5;
-}
-
-body.status-bar-baseline .status-bar:not(:hover)::before {
-  opacity: 0;
-}
-
-body:not(.status-bar-baseline) .status-bar {
-  --status-bar-border-width: var(--border-width);
-  right: unset;
-  justify-content: center;
-  transition: var(--anim-duration-moderate) var(--anim-motion-baseline), background-color var(--anim-duration-moderate) ease;
-  border: none;
-  border-radius: 100vh;
-  max-width: 100%;
-  min-height: unset;
-}
-body:not(.status-bar-baseline) .status-bar > div {
-  transition: var(--anim-duration-moderate) var(--anim-motion-baseline);
-}
-body:not(.status-bar-baseline) .status-bar:not(:hover) {
-  bottom: 2px;
-  border-width: 0;
-  background-color: hsl(from var(--mono-100) h s l/0.2);
-  padding-block: 0;
-  max-width: 160px;
-  height: 4px;
-}
-body:not(.status-bar-baseline) .status-bar:not(:hover) > div {
-  transform: scale(0.9);
-  opacity: 0;
-  filter: blur(16px);
+body .status-bar > div {
+  opacity: 1;
+  filter: none;
+  transform: none;
   white-space: nowrap;
 }
-body:not(.status-bar-baseline) .status-bar:hover {
-  bottom: 4px;
-  box-shadow: var(--shadow-s);
-  border-color: var(--background-modifier-border);
-  padding: 8px;
-  height: 40px;
+body .status-bar:not(:hover) {
+  opacity: 0;
+  transform: translateY(4px);
 }
-body:not(.status-bar-baseline) .status-bar:hover::before {
-  transform: scaleY(1);
-}
-body:not(.status-bar-baseline) .status-bar::before {
-  position: absolute;
-  transform: scaleY(10);
-  z-index: -1;
-  transition: var(--anim-duration-fast) var(--anim-duration-fast);
-  width: 100%;
-  height: 100%;
-  content: "";
-}
-
-body:not(.status-bar-baseline):not(.is-grabbing) .app-container.no-transition .status-bar {
-  bottom: 4px;
-  border-color: transparent;
-  background-color: var(--color-accent);
-  color: var(--text-on-accent);
-  max-width: 100% !important;
-  height: 40px !important;
-}
-body:not(.status-bar-baseline):not(.is-grabbing) .app-container.no-transition .status-bar > div {
-  transform: none !important;
-  opacity: 1 !important;
-  filter: none !important;
+body .status-bar:hover {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .workspace-leaf-content[data-type=empty] .empty-state-container {
@@ -2284,10 +2233,6 @@ settings:
     -
         id: tab-icon
         title: Disable compact sidebar tabs
-        type: class-toggle
-    -
-        id: status-bar-baseline
-        title: Disable compact status bar
         type: class-toggle
     -
         id: zoom-off
