@@ -25,7 +25,14 @@
       installTheme = pkgs.writeShellScriptBin "install-theme" ''
         set -e
         REPO_DIR="$(pwd)"
-        TARGET_VAULT="''${TARGET_VAULT:-$(realpath "$REPO_DIR/../MizarOS/obsidian/template")}"
+        if [ -d "$REPO_DIR/../../MizarOS/obsidian/template" ]; then
+          DEFAULT_VAULT="$(realpath "$REPO_DIR/../../MizarOS/obsidian/template")"
+        elif [ -d "$REPO_DIR/../MizarOS/obsidian/template" ]; then
+          DEFAULT_VAULT="$(realpath "$REPO_DIR/../MizarOS/obsidian/template")"
+        else
+          DEFAULT_VAULT="/home/manu/Documents/repositorios/MizarOS/obsidian/template"
+        fi
+        TARGET_VAULT="''${TARGET_VAULT:-$DEFAULT_VAULT}"
         TARGET_DIR="$TARGET_VAULT/.obsidian/themes/Mytheme"
 
         echo "🔗 Instalando symlink de Mytheme en $TARGET_VAULT..."
