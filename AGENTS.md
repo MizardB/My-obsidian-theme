@@ -55,8 +55,13 @@ La memoria, arquitectura y registro de lecciones residen fuera del control de ve
 - **Mapa de Arquitectura:** [`architecture.md`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme/architecture.md)
 - **Axiomas y Gotchas:** [`learnings.md`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme/learnings.md)
 - **Historial de Planes:** [`plans/`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme/plans)
+- **Decisiones de Arquitectura (ADRs):** [`ADRs/`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme/ADRs)
 
-## 4. Workflow E2E: Prototipado en Vivo, Memoria y Delegación a Subagentes
+## 5. Skills Locales Disponibles
+- **[`adr-writer`](file:///.agents/skills/adr-writer/SKILL.md):** Activación obligatoria tras validar prototipos contraintuitivos o descartar alternativas estándar.
+- **[`git-agent-workflow`](file:///.agents/skills/git-agent-workflow/SKILL.md):** Obligatorio para todo commit. Exige cuerpo descriptivo (qué, por qué, validación) y aislamiento de cambios de agente (`scope: agents`).
+
+## 6. Workflow E2E: Prototipado en Vivo, Memoria y Delegación a Subagentes
 
 > **REGLA DE ORO**: El 80% del éxito radica en el análisis previo. La memoria reside de forma segura e inmune a Git en el vault central [`/home/manu/Documents/MemorIA/02_Projects/Mytheme/`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme).
 
@@ -64,6 +69,7 @@ La memoria, arquitectura y registro de lecciones residen fuera del control de ve
 1. **Consulta de Memoria Central:**
    - Revisar el mapa de módulos en [`architecture.md`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme/architecture.md).
    - Revisar los axiomas técnicos conocidos en [`learnings.md`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme/learnings.md) (Electron, z-index, drag, flexbox).
+   - Revisar los [`ADRs`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme/ADRs) para no revertir decisiones de diseño intencionales.
 2. **Contraste con el Repositorio:**
    - Buscar selectores existentes, variables de color/espaciado y reglas `@use` en `src/` para no duplicar estilos.
 3. **Inspección en Vivo (MCP DevTools / CDP):**
@@ -80,6 +86,7 @@ La memoria, arquitectura y registro de lecciones residen fuera del control de ve
    - El usuario valida directamente en su pantalla física la interacción y estética en tiempo real.
 3. **Registro y Check:**
    - Con cada aprobación parcial del usuario, marcar `[x]` en el archivo del plan en `MemorIA/plans/` y guardar el bloque CSS exacto que funcionó.
+   - **Disparo de ADR:** Si la decisión validada es contraintuitiva o descarta un enfoque clásico, ejecutar la skill [`adr-writer`](file:///.agents/skills/adr-writer/SKILL.md) antes de consolidar.
 4. **Gestión de Errores y Subagente Sintetizador (Axioma > Inductivo):**
    - Si un prototipo no sale a la primera por un comportamiento oculto del framework/DOM:
      - El agente orquestador delega inmediatamente a un **Subagente Sintetizador** en background (`invoke_subagent`).
@@ -96,13 +103,14 @@ Una vez completados y validados todos los checks en el plan de `MemorIA` con el 
    - El agente orquestador dispara un **Subagente Implementador / Builder** (`invoke_subagent` con write tools) pasándole la carga útil:
      - Lista de archivos SCSS destino en `src/`.
      - Bloques de código CSS/SCSS validados en la Fase 2.
-     - Mensaje para el commit.
+     - Mensaje estructurado para el commit (siguiendo [`git-agent-workflow`](file:///.agents/skills/git-agent-workflow/SKILL.md)).
 2. **Ejecución y Compilación por el Subagente:**
    - Escribe quirúrgicamente los cambios en `src/*.scss`.
    - Ejecuta la compilación con Nix: `nix develop --command build-theme`.
    - Valida que `theme.css` se genere sin errores ni advertencias de compilación.
 3. **Git Hygiene & Cierre:**
-   - Revisa `git status` y `git diff` para asegurar cero efectos secundarios.
-   - Realiza el commit semántico (ej. `feat(sidedock): add floating acrylic sidedock`).
-   - Ejecuta `git push` y reporta el éxito de la operación al agente orquestador.
+   - Aplica estrictamente las reglas de [`git-agent-workflow`](file:///.agents/skills/git-agent-workflow/SKILL.md).
+   - Commit con cuerpo estructurado obligatorio (`Qué`, `Por qué`, `Validación`).
+   - Scope `agents` aislado de cambios en `src/`.
+   - `git push` inmediato y reporte de éxito al orquestador.
 
