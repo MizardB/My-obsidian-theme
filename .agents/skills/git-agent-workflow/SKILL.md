@@ -91,24 +91,3 @@ docs(agents): add git workflow skill and update agents guidelines
      ```
 
 ---
-
-## 5. Recetas CLI de Lectura Rápida (Para Inicio de Sesión)
-
-Comandos que el agente debe ejecutar para obtener contexto empírico inmediato:
-
-```bash
-# 1. Ver últimos 10 commits con archivos afectados
-git log -10 --oneline --stat
-
-# 2. Árbol visual de ramas y posición del HEAD
-git log -15 --oneline --graph --all --decorate
-
-# 3. Top archivos más modificados (hotspots reales de git)
-git log -10 --pretty=format: --name-only | grep -v '^$' | sort | uniq -c | sort -rn
-
-# 4. Leer el cuerpo completo del último commit (para entender el estado actual)
-git log -1 --format="%B"
-
-# 5. Estado de ramas y divergencia con remotos
-git branch -vv
-```
