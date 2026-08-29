@@ -35,11 +35,18 @@
         TARGET_VAULT="''${TARGET_VAULT:-$DEFAULT_VAULT}"
         TARGET_DIR="$TARGET_VAULT/.obsidian/themes/Mytheme"
 
-        echo "🔗 Instalando symlink de Mytheme en $TARGET_VAULT..."
-        mkdir -p "$TARGET_VAULT/.obsidian/themes"
+        if [ ! -f "$REPO_DIR/theme.css" ]; then
+          echo "⚙️ theme.css no encontrado, compilando..."
+          sass src/theme.scss theme.css
+        fi
+
+        echo "🔗 Instalando artefactos de Mytheme en $TARGET_VAULT..."
         rm -rf "$TARGET_DIR"
-        ln -sfn "$REPO_DIR" "$TARGET_DIR"
-        echo "✅ Symlink creado: $TARGET_DIR -> $REPO_DIR"
+        mkdir -p "$TARGET_DIR"
+
+        ln -sfn "$REPO_DIR/manifest.json" "$TARGET_DIR/manifest.json"
+        ln -sfn "$REPO_DIR/theme.css" "$TARGET_DIR/theme.css"
+        echo "✅ Enlaces individuales creados en $TARGET_DIR (manifest.json, theme.css)"
 
         APPEARANCE_FILE="$TARGET_VAULT/.obsidian/appearance.json"
         if [ -f "$APPEARANCE_FILE" ]; then
