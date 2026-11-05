@@ -26,6 +26,19 @@ El plugin [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) 
 
 No necesitas copiar `src/` ni compilar el tema: `theme.css` ya contiene los estilos listos para usar.
 
+## Comandos de desarrollo e instalación
+
+Desde la raíz del repositorio, con Nix:
+
+- `nix run .#build`: compila el SCSS actual en `theme.css`.
+- `nix run .#install`: compila siempre e instala copias independientes de `theme.css` y `manifest.json`. Sustituye los enlaces individuales de una instalación de desarrollo sin escribir a través de ellos. Cambios posteriores del repositorio no afectan a esa copia.
+- `nix run .#install-dev`: compila siempre y crea enlaces individuales a ambos archivos del repositorio, sustituyendo las copias existentes.
+- `nix run .#watch`: recompila al editar SCSS; para ver estos cambios en el vault hay que ejecutar antes `install-dev` explícitamente. No actualiza una instalación estable.
+
+Ambos instaladores usan por defecto `/home/manu/Documents/repositorios/MizarOS/obsidian/Vault_base` y seleccionan Mytheme solo si ya existe `.obsidian/appearance.json`, conservando las otras claves. `TARGET_VAULT` permite indicar otro destino, pero requiere autorización para intervenir en él. Rechazan un directorio Mytheme que sea un symlink o coincida con el repositorio; no migran enlaces de directorio automáticamente.
+
+Tras aprobar los cambios visuales, cerrar el ciclo con `nix run .#install` para dejar una instalación estable, sin dependencia del repositorio. Compilar o instalar no sustituye la revisión visual ni autoriza cambios en otros vaults.
+
 ## Funciones incluidas
 
 - Apariencia adaptada al sistema operativo, con estilos para escritorio y móvil.
