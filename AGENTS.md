@@ -1,116 +1,28 @@
-# Mytheme - Directrices para Agentes
+# Flujo de trabajo del theme
 
-## 1. Reglas Críticas de Desarrollo
-- **Prohibido editar `theme.css` directamente:** Es un artefacto compilado. Cualquier cambio manual será sobreescrito.
-- **Edición exclusiva en `src/`:** Todas las modificaciones de estilo, variables y estructura deben realizarse en los archivos SCSS dentro del directorio `src/` (ej. `src/theme.scss`, `src/features/`, etc.).
+## Entorno de pruebas
 
-## 2. Entorno y Compilación (Nix Flake)
-El proyecto utiliza Nix Flakes para gestionar las dependencias y scripts de compilación (`dart-sass`):
+- Repositorio del tema: `/home/manu/Documents/repositorios/My-obsidian-theme`.
+- Vault de pruebas: `/home/manu/Documents/repositorios/MizarOS/obsidian/Vault_base`.
+- Usar la CLI oficial de Obsidian para inspeccionar y probar la interfaz. No es necesario instalar un MCP.
+- Dirigir cada llamada explícitamente con `obsidian vault=Vault_base ...`. Antes de intervenir, comprobar con `obsidian vault=Vault_base vault info=path` que apunta al destino esperado. La selección del vault no constituye aislamiento de seguridad.
+- Preservar las notas, atajos, plugins y demás configuración existente. No operar sobre otros vaults.
 
-- **Compilar tema:**
-  ```bash
-  nix develop --command build-theme
-  ```
-  *(Dentro del devShell: `build-theme`)*
+## Del prototipo a la implementación
 
-- **Modo Watch (desarrollo continuo):**
-  ```bash
-  nix develop --command watch-theme
-  ```
-  *(Dentro del devShell: `watch-theme`)*
+1. **Prototipar en Obsidian.** Inspeccionar DOM y CSS y probar cambios visuales temporales, reversibles y separados del SCSS del tema. Limitar cada intervención al alcance solicitado por Manu; acordar el alcance si aún no está definido.
+2. **Revisar con Manu.** Mostrar el resultado en vivo y mediante capturas cuando sean útiles. Iterar hasta su visto bueno. Revisar los estados pertinentes al cambio, como hover, foco, paneles abiertos/cerrados y modos claro/oscuro. La emulación móvil no sustituye una prueba en un dispositivo real.
+3. **Preparar el ticket.** Tras aprobar el diseño, guardar una especificación con referencias visuales, selectores y variables relevantes, archivos SCSS afectados, hallazgos útiles, límites y criterios de aceptación. No guardar la conversación completa. Acordar el destino antes de escribir; los tickets persistentes de Cortex quedan fuera del repositorio. Aplicar las skills de documentación pertinentes y usar brief/blueprint solo cuando el alcance lo justifique.
+4. **Delegar al worker.** Entregar un ticket acotado con el diseño aprobado, fuentes, destinos autorizados, exclusiones y verificaciones. El visto bueno visual no autoriza cambios ajenos al ticket. Preservar todo trabajo previo o ajeno.
+5. **Verificar la implementación.** Compilar, retirar únicamente el prototipo temporal creado para el cambio y revisar el tema real en Obsidian. El padre contrasta el resultado del worker con los criterios de aceptación y con Manu cuando corresponda. Distinguir lo implementado de lo verificado y de lo pendiente.
+6. **Cerrar con commit.** Tras la conformidad final, el worker puede crear un commit limitado al ticket autorizado, siguiendo la skill de Git. No incluir cambios ajenos ni hacer push sin autorización explícita. Un commit no sustituye la validación visual.
 
-- **Instalar en vault de prueba:**
-  ```bash
-  nix develop --command install-theme
-  ```
-  *(Dentro del devShell: `install-theme`)*
+## Comandos del repositorio
 
-## 3. Vault de Pruebas (obsidian-devtools MCP)
+Ejecutarlos desde la raíz del repositorio:
 
-- **Vault:** `/home/manu/Documents/repositorios/MizarOS/obsidian/template`
-- **Puerto debug:** `9222` (instancia AISLADA, no interfiere con Obsidian principal)
-- **Script de inicio:** [`.agents/scripts/start-obsidian-debug.sh`](.agents/scripts/start-obsidian-debug.sh)
+- `nix run .#install`: instala/enlaza `theme.css` y `manifest.json` en el vault de pruebas y selecciona Mytheme. `TARGET_VAULT` permite otro destino, pero no debe usarse para ampliar el alcance sin autorización.
+- `nix run .#build`: compila `src/theme.scss` en `theme.css`.
+- `nix run .#watch`: recompila al cambiar el SCSS. El vault recibe el CSS mediante el enlace instalado.
 
-**Protocolo de inicio de sesión (OBLIGATORIO antes de cualquier operación DevTools):**
-
-```bash
-# Levantar instancia de prueba
-./.agents/scripts/start-obsidian-debug.sh
-
-# Si ya está corriendo, el script lo detecta y no lanza otra
-# Para cerrarla:
-./.agents/scripts/start-obsidian-debug.sh --kill
-```
-
-**Una vez arriba:**
-1. Llamar `list_pages` — el pageId es DINÁMICO, nunca hardcodearlo
-2. Llamar `select_page` con ese `pageId` antes de `evaluate_script`, `take_screenshot`, etc.
-3. Verificar vault: `() => app.vault.getName() + ' @ ' + app.vault.adapter.basePath`
-   - Debe retornar: `"template @ /home/manu/Documents/repositorios/MizarOS/obsidian/template"`
-
-> **NUNCA operar sobre la ventana de MemorIA** durante pruebas de tema.
-
-## 4. Memoria Externa del Proyecto (Vault MemorIA)
-La memoria, arquitectura y registro de lecciones residen fuera del control de versiones de Git para garantizar persistencia absoluta:
-- **Mapa de Arquitectura:** [`architecture.md`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme/architecture.md)
-- **Axiomas y Gotchas:** [`learnings.md`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme/learnings.md)
-- **Historial de Planes:** [`plans/`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme/plans)
-- **Decisiones de Arquitectura (ADRs):** [`ADRs/`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme/ADRs)
-
-## 5. Skills Locales Disponibles
-- **[`adr-writer`](file:///.agents/skills/adr-writer/SKILL.md):** Activación obligatoria tras validar prototipos contraintuitivos o descartar alternativas estándar.
-- **[`git-agent-workflow`](file:///.agents/skills/git-agent-workflow/SKILL.md):** Obligatorio para todo commit. Exige cuerpo descriptivo (qué, por qué, validación) y aislamiento de cambios de agente (`scope: agents`).
-
-## 6. Workflow E2E: Prototipado en Vivo, Memoria y Delegación a Subagentes
-
-> **REGLA DE ORO**: El 80% del éxito radica en el análisis previo. La memoria reside de forma segura e inmune a Git en el vault central [`/home/manu/Documents/MemorIA/02_Projects/Mytheme/`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme).
-
-### Fase 1: Análisis Total (Agente Orquestador)
-1. **Consulta de Memoria Central:**
-   - Revisar el mapa de módulos en [`architecture.md`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme/architecture.md).
-   - Revisar los axiomas técnicos conocidos en [`learnings.md`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme/learnings.md) (Electron, z-index, drag, flexbox).
-   - Revisar los [`ADRs`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme/ADRs) para no revertir decisiones de diseño intencionales.
-2. **Contraste con el Repositorio:**
-   - Buscar selectores existentes, variables de color/espaciado y reglas `@use` en `src/` para no duplicar estilos.
-3. **Inspección en Vivo (MCP DevTools / CDP):**
-   - Inspeccionar el DOM real computado (`getBoundingClientRect`, `getComputedStyle`, clases de estado como `.is-sidedock-collapsed`).
-   - Simular eventos (`hover`, `click`) para identificar restricciones de layout antes de proponer cambios.
-4. **Scope Lock y Plan:**
-   - Registrar el plan de trabajo con checkboxes atómicos (`[ ]`) en [`/home/manu/Documents/MemorIA/02_Projects/Mytheme/plans/YYYY-MM-DD-<feature>.md`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme/plans). No avanzar hasta tener el plan cerrado con el usuario.
-
-### Fase 2: Prototipado en Caliente & Aprendizaje Axiomático Asíncrono
-1. **Inyección en Memoria (Cero mutación de archivos):**
-   - Inyectar soluciones dinámicas directamente en el DOM mediante DevTools (`evaluate_script`).
-   - **Regla del Tag Único:** Usar siempre `<style id="agent-preview">...</style>` y reemplazar su contenido en cada prueba para no acumular basura de iteraciones anteriores.
-2. **Validación Visual Directa:**
-   - El usuario valida directamente en su pantalla física la interacción y estética en tiempo real.
-3. **Registro y Check:**
-   - Con cada aprobación parcial del usuario, marcar `[x]` en el archivo del plan en `MemorIA/plans/` y guardar el bloque CSS exacto que funcionó.
-   - **Disparo de ADR:** Si la decisión validada es contraintuitiva o descarta un enfoque clásico, ejecutar la skill [`adr-writer`](file:///.agents/skills/adr-writer/SKILL.md) antes de consolidar.
-4. **Gestión de Errores y Subagente Sintetizador (Axioma > Inductivo):**
-   - Si un prototipo no sale a la primera por un comportamiento oculto del framework/DOM:
-     - El agente orquestador delega inmediatamente a un **Subagente Sintetizador** en background (`invoke_subagent`).
-     - El subagente deduce el principio general, ubica la sección correcta y actualiza directamente [`learnings.md`](file:///home/manu/Documents/MemorIA/02_Projects/Mytheme/learnings.md) en el vault `MemorIA`.
-   - **Formato Axiomático Estricto:**
-     ```markdown
-     ### [Axioma / Principio General]: Regla universal que rige el comportamiento.
-     - **Ejemplo concreto:** Selector o caso específico encontrado en Obsidian/Electron.
-     ```
-
-### Fase 3: Consolidación Delegada (Subagente Implementador)
-Una vez completados y validados todos los checks en el plan de `MemorIA` con el usuario:
-1. **Delegación a Subagente Implementador:**
-   - El agente orquestador dispara un **Subagente Implementador / Builder** (`invoke_subagent` con write tools) pasándole la carga útil:
-     - Lista de archivos SCSS destino en `src/`.
-     - Bloques de código CSS/SCSS validados en la Fase 2.
-     - Mensaje estructurado para el commit (siguiendo [`git-agent-workflow`](file:///.agents/skills/git-agent-workflow/SKILL.md)).
-2. **Ejecución y Compilación por el Subagente:**
-   - Escribe quirúrgicamente los cambios en `src/*.scss`.
-   - Ejecuta la compilación con Nix: `nix develop --command build-theme`.
-   - Valida que `theme.css` se genere sin errores ni advertencias de compilación.
-3. **Git Hygiene & Cierre:**
-   - Aplica estrictamente las reglas de [`git-agent-workflow`](file:///.agents/skills/git-agent-workflow/SKILL.md).
-   - Commit con cuerpo estructurado obligatorio (`Qué`, `Por qué`, `Validación`).
-   - Scope `agents` aislado de cambios en `src/`.
-   - `git push` inmediato y reporte de éxito al orquestador.
-
+La implementación permanente se hace en los archivos SCSS correspondientes, no solo en el CSS generado ni en cambios temporales del DOM. No instalar dependencias, cambiar configuración de sistema ni reiniciar aplicaciones fuera de lo autorizado.
