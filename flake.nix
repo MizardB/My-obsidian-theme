@@ -13,13 +13,13 @@
       buildTheme = pkgs.writeShellScriptBin "build-theme" ''
         set -e
         echo "🎨 Compilando SCSS para Mytheme..."
-        sass src/theme.scss theme.css
+        ${pkgs.dart-sass}/bin/sass src/theme.scss theme.css
         echo "✅ Compilación exitosa: theme.css generado."
       '';
 
       watchTheme = pkgs.writeShellScriptBin "watch-theme" ''
         echo "👀 Escuchando cambios en SCSS en tiempo real..."
-        sass --watch src/theme.scss:theme.css
+        ${pkgs.dart-sass}/bin/sass --watch src/theme.scss:theme.css
       '';
 
       installTheme = pkgs.writeShellScriptBin "install-theme" ''
@@ -37,7 +37,7 @@
 
         if [ ! -f "$REPO_DIR/theme.css" ]; then
           echo "⚙️ theme.css no encontrado, compilando..."
-          sass src/theme.scss theme.css
+          ${pkgs.dart-sass}/bin/sass src/theme.scss theme.css
         fi
 
         echo "🔗 Instalando artefactos de Mytheme en $TARGET_VAULT..."
