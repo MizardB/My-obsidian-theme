@@ -2433,6 +2433,11 @@ body:not(.is-android:not(.adaptive-mode-off)) .setting-item[data-id=material-col
   .markdown-source-view {
     color: var(--text-normal-editor, var(--text-normal));
   }
+  .markdown-preview-view p,
+  .markdown-source-view.mod-cm6 .cm-line:not(.HyperMD-header, .HyperMD-list-line, .HyperMD-quote, .HyperMD-codeblock, .HyperMD-table-row, .HyperMD-hr) {
+    text-align: justify;
+    text-align-last: start;
+  }
   :is(.markdown-rendered, .markdown-source-view) mjx-container {
     font-size: calc(1em + 1px);
   }
@@ -2536,6 +2541,10 @@ body:not(.is-android:not(.adaptive-mode-off)) .setting-item[data-id=material-col
   }
   .block-language-chart {
     width: 100% !important;
+  }
+  .markdown-source-view .inline-title,
+  .markdown-reading-view .inline-title {
+    text-align: center;
   }
   .inline-title {
     position: relative;
@@ -6858,6 +6867,20 @@ body {
 }
 
 /* Alignment */
+/* Center note images by default; explicit left/right alignment stays opt-in. */
+.markdown-preview-view .image-embed:not([alt=left]):not([alt=right]),
+.markdown-source-view .cm-line > .image-embed:not([alt=left]):not([alt=right]) {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.markdown-preview-view p > img:only-child:not(.emoji, .link-favicon, .svg-icon, .cm-widgetBuffer):not([alt=left]):not([alt=right]) {
+  display: block;
+  margin-inline: auto;
+}
+
 img[alt=left]:not(.emoji),
 div[alt=left]:not(.emoji),
 span[alt=left] img:not(.emoji) {

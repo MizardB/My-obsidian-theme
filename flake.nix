@@ -51,7 +51,7 @@
     {
       packages.${system}.default = pkgs.stdenv.mkDerivation {
         pname = "obsidian-mytheme";
-        version = "1.0.0";
+        version = "1.0.1";
         src = self;
         nativeBuildInputs = [ pkgs.dart-sass ];
         buildPhase = ''

@@ -73,6 +73,13 @@
     color: var(--text-normal-editor, var(--text-normal));
   }
 
+  // Justify prose without changing structured editor lines or table cells.
+  .markdown-preview-view p,
+  .markdown-source-view.mod-cm6 .cm-line:not(.HyperMD-header, .HyperMD-list-line, .HyperMD-quote, .HyperMD-codeblock, .HyperMD-table-row, .HyperMD-hr) {
+    text-align: justify;
+    text-align-last: start;
+  }
+
   // Size only the MathJax container, never its internal glyphs.
   :is(.markdown-rendered, .markdown-source-view) mjx-container {
     font-size: calc(1em + 1px);
@@ -193,6 +200,11 @@
   }
 
   // Inline title & Headings
+  .markdown-source-view .inline-title,
+  .markdown-reading-view .inline-title {
+    text-align: center;
+  }
+
   .inline-title {
     position: relative;
     top: -16px;

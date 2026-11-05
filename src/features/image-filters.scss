@@ -42,6 +42,20 @@
 }
 
 /* Alignment */
+/* Center note images by default; explicit left/right alignment stays opt-in. */
+.markdown-preview-view .image-embed:not([alt="left"]):not([alt="right"]),
+.markdown-source-view .cm-line > .image-embed:not([alt="left"]):not([alt="right"]) {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.markdown-preview-view p > img:only-child:not(.emoji, .link-favicon, .svg-icon, .cm-widgetBuffer):not([alt="left"]):not([alt="right"]) {
+  display: block;
+  margin-inline: auto;
+}
+
 img[alt="left"]:not(.emoji),
 div[alt="left"]:not(.emoji),
 span[alt="left"] img:not(.emoji) {
