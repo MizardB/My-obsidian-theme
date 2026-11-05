@@ -9,6 +9,8 @@
   .callout:not([data-callout="note-toolbar"]) {
     corner-shape: var(--corner-shape);
     font-size: var(--callout-size);
+    background: transparent;
+    --mytheme-callout-body: color-mix(in oklab, var(--text-normal) 75%, hsl(from var(--callout-color) h s l) 25%);
 
     .callout-content > *:first-child {
       margin-block-start: 8px;
@@ -41,13 +43,13 @@
     }
 
     .callout-content {
+      color: var(--mytheme-callout-body);
       margin-left: calc(var(--icon-size) + 8px);
     }
   }
 
   .callout:not([data-callout]) {
     --callout-color: var(--color-accent);
-    background-color: hsl(from var(--color-accent) h s l / 0.15);
     border-color: hsl(from var(--color-accent) h s l / var(--callout-border-opacity));
 
     .callout-title {
@@ -55,9 +57,12 @@
     }
   }
 
+  .theme-dark .callout:not([data-callout="note-toolbar"]) {
+    --mytheme-callout-body: color-mix(in oklab, var(--text-normal) 65%, hsl(from var(--callout-color) h s l) 35%);
+  }
+
   // Callout: Tactile
   body:is(.mod-macos, .adaptive-mode-off) .callout:not([data-callout="note-toolbar"]) {
     box-shadow: var(--shadow-tactile);
-    background: linear-gradient(hsl(from var(--callout-color) h s l / 0.1), hsl(from var(--callout-color) h s l / 0.175));
   }
 }

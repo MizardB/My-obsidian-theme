@@ -73,6 +73,11 @@
     color: var(--text-normal-editor, var(--text-normal));
   }
 
+  // Size only the MathJax container, never its internal glyphs.
+  :is(.markdown-rendered, .markdown-source-view) mjx-container {
+    font-size: calc(1em + 1px);
+  }
+
   // Tab title bar
   .view-header {
     padding: 0 8px;
@@ -188,6 +193,11 @@
   }
 
   // Inline title & Headings
+  .inline-title {
+    position: relative;
+    top: -16px;
+  }
+
   body:not(.is-mobile) .inline-title:not([data-level]) {
     position: relative;
 
@@ -272,6 +282,33 @@
       background: var(--background-primary-alt);
       max-height: 75vh;
       object-fit: contain;
+    }
+  }
+
+  // Reading content only: do not outline editor widgets, emoji or UI icons.
+  .markdown-reading-view .markdown-rendered img:not(.emoji, .link-favicon, .cm-widgetBuffer, .svg-icon, [alt="banner"]) {
+    outline: 1px solid transparent;
+    outline-offset: 0;
+    box-shadow: none;
+    transition: outline-color 300ms ease;
+
+    &:hover {
+      outline-color: var(--mytheme-image-hover-outline);
+      box-shadow: none;
+    }
+  }
+
+  .theme-light {
+    --mytheme-image-hover-outline: rgb(0 0 0 / 25%);
+  }
+
+  .theme-dark {
+    --mytheme-image-hover-outline: rgb(255 255 255 / 25%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .markdown-reading-view .markdown-rendered img:not(.emoji, .link-favicon, .cm-widgetBuffer, .svg-icon, [alt="banner"]) {
+      transition: none;
     }
   }
 

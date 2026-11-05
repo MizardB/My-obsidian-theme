@@ -13,6 +13,15 @@
     font-size: var(--blockquote-size);
   }
 
+  .markdown-rendered blockquote:not(.callout) {
+    font-style: italic;
+
+    // Quotes may contain callouts, code or math; keep those upright.
+    :is(.callout, code, pre, mjx-container) {
+      font-style: normal;
+    }
+  }
+
   .cm-formatting-quote {
     margin-left: 8px;
   }

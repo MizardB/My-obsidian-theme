@@ -2433,6 +2433,9 @@ body:not(.is-android:not(.adaptive-mode-off)) .setting-item[data-id=material-col
   .markdown-source-view {
     color: var(--text-normal-editor, var(--text-normal));
   }
+  :is(.markdown-rendered, .markdown-source-view) mjx-container {
+    font-size: calc(1em + 1px);
+  }
   .view-header {
     padding: 0 8px;
     flex-shrink: 0;
@@ -2534,6 +2537,10 @@ body:not(.is-android:not(.adaptive-mode-off)) .setting-item[data-id=material-col
   .block-language-chart {
     width: 100% !important;
   }
+  .inline-title {
+    position: relative;
+    top: -16px;
+  }
   body:not(.is-mobile) .inline-title:not([data-level]) {
     position: relative;
   }
@@ -2615,6 +2622,29 @@ body:not(.is-android:not(.adaptive-mode-off)) .setting-item[data-id=material-col
     max-height: 75vh;
     object-fit: contain;
   }
+  .markdown-reading-view .markdown-rendered img:not(.emoji, .link-favicon, .cm-widgetBuffer, .svg-icon, [alt=banner]) {
+    outline: 1px solid transparent;
+    outline-offset: 0;
+    box-shadow: none;
+    transition: outline-color 300ms ease;
+  }
+  .markdown-reading-view .markdown-rendered img:not(.emoji, .link-favicon, .cm-widgetBuffer, .svg-icon, [alt=banner]):hover {
+    outline-color: var(--mytheme-image-hover-outline);
+    box-shadow: none;
+  }
+  .theme-light {
+    --mytheme-image-hover-outline: rgb(0 0 0 / 25%);
+  }
+  .theme-dark {
+    --mytheme-image-hover-outline: rgb(255 255 255 / 25%);
+  }
+}
+@media screen and (prefers-reduced-motion: reduce), print and (prefers-reduced-motion: reduce) {
+  .markdown-reading-view .markdown-rendered img:not(.emoji, .link-favicon, .cm-widgetBuffer, .svg-icon, [alt=banner]) {
+    transition: none;
+  }
+}
+@media screen, print {
   .img-grid .markdown-preview-section .el-p > p:has(> .image-embed):has(span:last-child),
   .img-grid .markdown-preview-section .el-p > p:has(> img):not(:has(> :not(img))) {
     --p-spacing: 4px;
@@ -2788,6 +2818,12 @@ body:not(.is-android:not(.adaptive-mode-off)) .setting-item[data-id=material-col
     corner-shape: var(--corner-shape);
     font-size: var(--blockquote-size);
   }
+  .markdown-rendered blockquote:not(.callout) {
+    font-style: italic;
+  }
+  .markdown-rendered blockquote:not(.callout) :is(.callout, code, pre, mjx-container) {
+    font-style: normal;
+  }
   .cm-formatting-quote {
     margin-left: 8px;
   }
@@ -2859,6 +2895,8 @@ body:not(.is-android:not(.adaptive-mode-off)) .setting-item[data-id=material-col
   .callout:not([data-callout=note-toolbar]) {
     corner-shape: var(--corner-shape);
     font-size: var(--callout-size);
+    background: transparent;
+    --mytheme-callout-body: color-mix(in oklab, var(--text-normal) 75%, hsl(from var(--callout-color) h s l) 25%);
   }
   .callout:not([data-callout=note-toolbar]) .callout-content > *:first-child {
     margin-block-start: 8px;
@@ -2884,19 +2922,21 @@ body:not(.is-android:not(.adaptive-mode-off)) .setting-item[data-id=material-col
     padding-inline-end: 0;
   }
   .callout:not([data-callout=note-toolbar]) .callout-content {
+    color: var(--mytheme-callout-body);
     margin-left: calc(var(--icon-size) + 8px);
   }
   .callout:not([data-callout]) {
     --callout-color: var(--color-accent);
-    background-color: hsl(from var(--color-accent) h s l/0.15);
     border-color: hsl(from var(--color-accent) h s l/var(--callout-border-opacity));
   }
   .callout:not([data-callout]) .callout-title {
     color: var(--callout-color);
   }
+  .theme-dark .callout:not([data-callout=note-toolbar]) {
+    --mytheme-callout-body: color-mix(in oklab, var(--text-normal) 65%, hsl(from var(--callout-color) h s l) 35%);
+  }
   body:is(.mod-macos, .adaptive-mode-off) .callout:not([data-callout=note-toolbar]) {
     box-shadow: var(--shadow-tactile);
-    background: linear-gradient(hsl(from var(--callout-color) h s l/0.1), hsl(from var(--callout-color) h s l/0.175));
   }
 }
 @media screen, print {
@@ -6183,7 +6223,7 @@ body:not(.banner-off) .mod-root .view-content:not(.pixel-banner, .has-banner) di
 
 body {
   --file-line-width: var(--line-width);
-  --line-width: 700px;
+  --line-width: 740px;
 }
 
 body:not(.block-width-off) {
